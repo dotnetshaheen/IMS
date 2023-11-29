@@ -1,0 +1,239 @@
+USE [master]
+GO
+/****** Object:  Database [IspManagementDb]    Script Date: 11/30/2023 1:36:22 AM ******/
+CREATE DATABASE [IspManagementDb]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'IspManagementDb', FILENAME = N'C:\Program Files (x86)\Plesk\Databases\MSSQL\MSSQL15.MSSQLSERVER2019\MSSQL\DATA\IspManagementDb.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'IspManagementDb_log', FILENAME = N'C:\Program Files (x86)\Plesk\Databases\MSSQL\MSSQL15.MSSQLSERVER2019\MSSQL\DATA\IspManagementDb_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT
+GO
+ALTER DATABASE [IspManagementDb] SET COMPATIBILITY_LEVEL = 150
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [IspManagementDb].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [IspManagementDb] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [IspManagementDb] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [IspManagementDb] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [IspManagementDb] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [IspManagementDb] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [IspManagementDb] SET AUTO_CLOSE ON 
+GO
+ALTER DATABASE [IspManagementDb] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [IspManagementDb] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [IspManagementDb] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [IspManagementDb] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [IspManagementDb] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [IspManagementDb] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [IspManagementDb] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [IspManagementDb] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [IspManagementDb] SET  ENABLE_BROKER 
+GO
+ALTER DATABASE [IspManagementDb] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [IspManagementDb] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [IspManagementDb] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [IspManagementDb] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [IspManagementDb] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [IspManagementDb] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [IspManagementDb] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [IspManagementDb] SET RECOVERY SIMPLE 
+GO
+ALTER DATABASE [IspManagementDb] SET  MULTI_USER 
+GO
+ALTER DATABASE [IspManagementDb] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [IspManagementDb] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [IspManagementDb] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [IspManagementDb] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [IspManagementDb] SET DELAYED_DURABILITY = DISABLED 
+GO
+ALTER DATABASE [IspManagementDb] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+ALTER DATABASE [IspManagementDb] SET QUERY_STORE = OFF
+GO
+USE [IspManagementDb]
+GO
+/****** Object:  User [ispadmin]    Script Date: 11/30/2023 1:36:23 AM ******/
+CREATE USER [ispadmin] FOR LOGIN [ispadmin] WITH DEFAULT_SCHEMA=[ispadmin]
+GO
+ALTER ROLE [db_ddladmin] ADD MEMBER [ispadmin]
+GO
+ALTER ROLE [db_backupoperator] ADD MEMBER [ispadmin]
+GO
+ALTER ROLE [db_datareader] ADD MEMBER [ispadmin]
+GO
+ALTER ROLE [db_datawriter] ADD MEMBER [ispadmin]
+GO
+/****** Object:  Schema [ispadmin]    Script Date: 11/30/2023 1:36:23 AM ******/
+CREATE SCHEMA [ispadmin]
+GO
+/****** Object:  Table [dbo].[AppFeatures]    Script Date: 11/30/2023 1:36:23 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AppFeatures](
+	[Id] [int] NOT NULL,
+	[FeatureName] [varchar](100) NOT NULL,
+	[Description] [varchar](200) NULL,
+	[IsActive] [int] NOT NULL,
+	[IsDeleted] [int] NOT NULL,
+ CONSTRAINT [PK_AppFeatures] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Rights]    Script Date: 11/30/2023 1:36:23 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Rights](
+	[Id] [int] NOT NULL,
+	[RightsName] [varchar](100) NOT NULL,
+	[Description] [varchar](200) NULL,
+	[AppFeatureId] [int] NOT NULL,
+	[IsActive] [int] NOT NULL,
+	[IsDeleted] [int] NOT NULL,
+ CONSTRAINT [PK_Rights] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[RoleRights]    Script Date: 11/30/2023 1:36:23 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[RoleRights](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[RoleId] [int] NOT NULL,
+	[RightsId] [int] NULL,
+	[IsActive] [int] NOT NULL,
+	[IsDeleted] [int] NOT NULL,
+	[CreationTime] [datetime] NOT NULL,
+	[CreatorUserId] [int] NULL,
+	[LastModificationTime] [datetime] NULL,
+	[ModifierUserId] [int] NULL,
+	[DeletationTime] [datetime] NULL,
+	[DeletorUserId] [int] NULL,
+ CONSTRAINT [PK_RoleRights] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Roles]    Script Date: 11/30/2023 1:36:23 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Roles](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[RoleName] [varchar](100) NOT NULL,
+	[Description] [varchar](200) NULL,
+	[IsActive] [int] NOT NULL,
+	[IsDeleted] [int] NOT NULL,
+	[IsGlobalRole] [int] NOT NULL,
+	[CreationTime] [datetime] NOT NULL,
+	[CreatorUserId] [int] NULL,
+	[LastModificationTime] [datetime] NULL,
+	[ModifierUserId] [int] NULL,
+	[DeletationTime] [datetime] NULL,
+	[DeletorUserId] [int] NULL,
+ CONSTRAINT [PK_Roles] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Users]    Script Date: 11/30/2023 1:36:23 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Users](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[UserName] [varchar](100) NOT NULL,
+	[UserEmail] [varchar](100) NOT NULL,
+	[LoginName] [varchar](50) NOT NULL,
+	[PasswordHash] [varbinary](64) NOT NULL,
+	[PasswordSalt] [varbinary](128) NOT NULL,
+	[UserMobileNumber] [varchar](20) NOT NULL,
+	[RoleId] [int] NULL,
+	[IsActive] [int] NOT NULL,
+	[IsDeleted] [int] NOT NULL,
+	[CreationTime] [datetime] NOT NULL,
+	[CreatorUserId] [int] NULL,
+	[LastModificationTime] [datetime] NULL,
+	[ModifierUserId] [int] NULL,
+	[DeletationTime] [datetime] NULL,
+	[DeletorUserId] [int] NULL,
+ CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[AppFeatures] ADD  CONSTRAINT [DEFAULT_AppFeatures_IsActive]  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [dbo].[AppFeatures] ADD  CONSTRAINT [DEFAULT_AppFeatures_IsDeleted]  DEFAULT ((0)) FOR [IsDeleted]
+GO
+ALTER TABLE [dbo].[Rights] ADD  CONSTRAINT [DF_Rights_IsActive]  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [dbo].[Rights] ADD  CONSTRAINT [DF_Rights_IsDeleted]  DEFAULT ((0)) FOR [IsDeleted]
+GO
+ALTER TABLE [dbo].[RoleRights] ADD  CONSTRAINT [DF_RoleRights_IsActive_1]  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [dbo].[RoleRights] ADD  CONSTRAINT [DF_RoleRights_IsDeleted_1]  DEFAULT ((0)) FOR [IsDeleted]
+GO
+ALTER TABLE [dbo].[RoleRights] ADD  CONSTRAINT [DF_RoleRights_CreationTime_1]  DEFAULT (getdate()) FOR [CreationTime]
+GO
+ALTER TABLE [dbo].[Roles] ADD  CONSTRAINT [DF_Roles_IsActive]  DEFAULT ((1)) FOR [IsActive]
+GO
+ALTER TABLE [dbo].[Roles] ADD  CONSTRAINT [DF_Roles_IsDeleted]  DEFAULT ((0)) FOR [IsDeleted]
+GO
+ALTER TABLE [dbo].[Roles] ADD  CONSTRAINT [DF_Roles_IsGlobal]  DEFAULT ((0)) FOR [IsGlobalRole]
+GO
+ALTER TABLE [dbo].[Roles] ADD  CONSTRAINT [DF_Roles_CreationTime]  DEFAULT (getdate()) FOR [CreationTime]
+GO
+ALTER TABLE [dbo].[Users] ADD  CONSTRAINT [DF_Users_CreationTime]  DEFAULT (getdate()) FOR [CreationTime]
+GO
+ALTER TABLE [dbo].[Rights]  WITH CHECK ADD  CONSTRAINT [FK_Rights_AppFeatures] FOREIGN KEY([AppFeatureId])
+REFERENCES [dbo].[AppFeatures] ([Id])
+GO
+ALTER TABLE [dbo].[Rights] CHECK CONSTRAINT [FK_Rights_AppFeatures]
+GO
+USE [master]
+GO
+ALTER DATABASE [IspManagementDb] SET  READ_WRITE 
+GO
